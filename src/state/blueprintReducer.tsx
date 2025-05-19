@@ -1,7 +1,10 @@
 import { BLUEPRINT_ACTION, BlueprintAction, BlueprintState } from '../types/state/blueprintState';
 
 const handleInitAction = (state: BlueprintState, action: BlueprintAction): BlueprintState => {
-	return { ...state, counter: state.counter + 1 };
+	return { ...state, 
+		nodes: action.payload.nodes,
+		edges: action.payload.edges,
+		counter: state.counter + 1 };
 };
 
 export const blueprintReducer = (state: BlueprintState, action: BlueprintAction): BlueprintState => {

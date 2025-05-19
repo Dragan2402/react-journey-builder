@@ -32,6 +32,7 @@ export const BlueprintProvider = ({ children }: { children: ReactNode }) => {
 						target: edge.target,
 					};
 				});
+
 				dispatch({
 					payload: {
 						edges: edges,
@@ -49,9 +50,3 @@ export const BlueprintProvider = ({ children }: { children: ReactNode }) => {
 
 	return <BlueprintContext.Provider value={{ state, dispatch }}>{children}</BlueprintContext.Provider>;
 };
-
-// export const useBlueprint = () => {
-// 	const context = useContext(BlueprintContext);
-
-// 	return context!;
-// };

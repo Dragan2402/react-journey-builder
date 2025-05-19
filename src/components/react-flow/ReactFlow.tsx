@@ -1,47 +1,31 @@
-import { useCallback, useContext } from 'react';
-import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from 'reactflow';
+import { useContext, useMemo } from 'react';
+import ReactFlow, { Background , Node} from 'reactflow';
+
+import { BlueprintContext } from '../../context/BlueprintContext';
+import ReactFlowNode from './ReactFlowNode';
 
 import 'reactflow/dist/style.css';
 
 interface GraphFlowProps {
-	nodes: {
-		id: string;
-		position: {
-			x: number;
-			y: number;
-		};
-		data: { label: string };
-	}[];
-	edges: {
-		id: string;
-		source: string;
-		target: string;
-	}[];
+	selectNode: (nodeId: string) => void;
 }
 
-const initialNodes = [
-	{ id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-	{ id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
-];
+function GraphFlow({ selectNode }: GraphFlowProps) {  
+	const nodeTypes = useMemo(() => ({ form: ReactFlowNode }), []);
+	const { state } = useContext(BlueprintContext)!;
 
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
-
-function GraphFlow({ edges = initialEdges, nodes = initialNodes }: GraphFlowProps) {
-	const [flowNodes, setFlowNodes, onFlowNodesChange] = useNodesState(nodes);
-	const [flowEdges, setFlowEdges, onFlowEdgesChange] = useEdgesState(edges);
-
-	const onConnect = useCallback((params: any) => setFlowEdges((eds) => addEdge(params, eds)), [setFlowEdges]);
+	const onNodeClick = (_: React.MouseEvent, node: Node) => {
+		selectNode(node.id);
+	};
 
 	return (
 		<ReactFlow
-			nodes={flowNodes}
-			edges={flowEdges}
-			onNodesChange={onFlowNodesChange}
-			onEdgesChange={onFlowEdgesChange}
-			onConnect={onConnect}
+			nodes={state.nodes}
+			edges={state.edges}
+			nodeTypes={nodeTypes}
+			onNodeClick={onNodeClick}
+			fitView
 		>
-			<MiniMap />
-			<Controls />
 			<Background />
 		</ReactFlow>
 	);

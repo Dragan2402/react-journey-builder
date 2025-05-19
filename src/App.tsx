@@ -1,26 +1,38 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
+import PrefillForm from './components/prefill-form/PrefillForm';
 import GraphFlow from './components/react-flow/ReactFlow';
-import { BLUEPRINT_ACTION } from './types/state/blueprintState';
+import { Sheet, SheetTrigger, SheetTitle, SheetContent, SheetDescription, SheetHeader } from './components/ui/sheet';
+import { BlueprintNode } from './types/internal/blueprintNode';
 import { BlueprintContext } from './context/BlueprintContext';
 
-function App() {
-	const { state, dispatch } = useContext(BlueprintContext)!;
+function App() {	
+	const { state } = useContext(BlueprintContext)!;
+
+	const [selectedNode, setSelectedNode] = useState<BlueprintNode | null>(null);
+	
+	const handleNodeSelection = (nodeId?: string) => {
+		const node = state.nodes.find(node => node.id === nodeId);
+		if (node) {
+			setSelectedNode(node);
+		}
+	}
+
+	const handleSheetOpenChange = (open: boolean) => {
+		if (!open) {
+			setSelectedNode(null);
+		}
+	}
 
 	return (
 		<div className="flex bg-white item-center h-full w-full">
-			<button
-				onClick={() =>
-					dispatch({
-						payload: { nodes: [], edges: [] },
-						type: BLUEPRINT_ACTION.INIT,
-					})
-				}
-				className="absolute z-[99] bg-red-500 px-10"
-			>
-				Counter: {state.counter}
-			</button>
-			<GraphFlow edges={state.edges} nodes={state.nodes} />
+			{selectedNode && (
+				<PrefillForm
+					selectedNode={selectedNode}
+					handleSheetOpenChange={handleSheetOpenChange}
+				/>
+			)}
+			<GraphFlow selectNode={handleNodeSelection}/>
 		</div>
 	);
 }

@@ -14,6 +14,7 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraph):
 		return {
 			id: node.id,
 			position: node.position,
+			type: node.type,
 			data: {
 				label: node.data.name,
 				predecessors: getNodePredecessors(node, nodesDictionary),
@@ -27,16 +28,15 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraph):
 };
 
 const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, GraphNode>) => {
-	const queue = [node.data.prerequisites];
+	const queue = [...node.data.prerequisites];
 	const visited: Record<string, boolean> = {};
 	const predecessors: string[] = [];
 	while (queue.length !== 0) {
-		const currentVisitingNodeIdArray = queue.shift();
+		const currentVisitingNodeId = queue.shift();
 
-		if (!currentVisitingNodeIdArray) {
+		if (!currentVisitingNodeId) {
 			return;
 		}
-		const currentVisitingNodeId = currentVisitingNodeIdArray[0];
 
 		if (visited[currentVisitingNodeId]) {
 			continue;
@@ -44,7 +44,7 @@ const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, Gr
 
 		var currentVisitingNode = nodesDictionary[currentVisitingNodeId];
 
-		queue.push(currentVisitingNode.data.prerequisites);
+		queue.push(...currentVisitingNode.data.prerequisites);
 
 		visited[currentVisitingNodeId] = true;
 
@@ -68,5 +68,5 @@ const mapFormProperties = (form: Form): NodeProperty[] => {
 		});
 	}
 
-	return [];
+	return mappedProperties;
 };

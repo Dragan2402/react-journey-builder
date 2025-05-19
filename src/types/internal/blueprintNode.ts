@@ -1,6 +1,7 @@
 export interface BlueprintNode {
 	id: string;
 	position: NodePosition;
+	type: string;
 	data: {
 		label: string;
 		properties: NodeProperty[];
