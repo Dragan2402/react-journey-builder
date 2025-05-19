@@ -12,7 +12,7 @@ function App() {
 			<button
 				onClick={() =>
 					dispatch({
-						payload: { nodes: [] },
+						payload: { nodes: [], edges: [] },
 						type: BLUEPRINT_ACTION.INIT,
 					})
 				}
@@ -20,7 +20,7 @@ function App() {
 			>
 				Counter: {state.counter}
 			</button>
-			<GraphFlow />
+			<GraphFlow edges={state.edges} nodes={state.nodes} />
 		</div>
 	);
 }

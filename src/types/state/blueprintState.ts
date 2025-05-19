@@ -1,13 +1,15 @@
 import { BlueprintNode } from '../internal/blueprintNode';
+import { Edge } from '../internal/edge';
 
 export interface BlueprintState {
+	edges: Edge[];
 	nodes: BlueprintNode[];
 	counter: number;
 }
 
 export type BlueprintAction = {
 	type: BLUEPRINT_ACTION.INIT;
-	payload: { nodes: BlueprintNode[] };
+	payload: { nodes: BlueprintNode[]; edges: Edge[] };
 };
 
 export enum BLUEPRINT_ACTION {
