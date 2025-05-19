@@ -35,7 +35,7 @@ const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, Gr
 	while (queue.length !== 0) {
 		const currentVisitingNodeId = queue.shift();
 
-		if (!currentVisitingNodeId || visited[currentVisitingNodeId]) {
+		if (!currentVisitingNodeId || visited[currentVisitingNodeId] || currentVisitingNodeId === node.id) {
 			continue;
 		}
 

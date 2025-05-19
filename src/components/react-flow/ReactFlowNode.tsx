@@ -11,7 +11,10 @@ interface FormNodeProps {
 
 const ReactFlowNode = ({ data }: FormNodeProps) => {
 	return (
-		<div className="flex items-center gap-x-2 border border-gray-300 px-2 py-1 rounded-lg w-[150px]">
+		<div
+			data-testid="react-flow-node"
+			className="flex items-center gap-x-2 border border-gray-300 px-2 py-1 rounded-lg w-[150px]"
+		>
 			<img src={formImage} alt="form" className="w-8 h-8 rounded-lg" />
 
 			<div className="flex flex-col justify-center">

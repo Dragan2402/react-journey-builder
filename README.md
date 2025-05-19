@@ -43,16 +43,17 @@ The application will be available at `http://localhost:5173`
 ```
 src/
 ├── api/              # API integration and axios configuration
-├── assets/           # Static assets (images, fonts, etc.)
+├── assets/           # Static assets, currently only images.
 ├── components/       # React components
-│   ├── ui/          # Reusable UI components
-│   ├── prefill-form/# Form-related components
-│   └── react-flow/  # Flow diagram components
-├── context/         # React Context providers
-├── lib/             # Utility functions and helpers
-├── service/         # Business logic and services
-├── state/           # State management
-└── types/           # TypeScript type definitions
+│   ├── ui/           # Reusable UI components. Based on Shadcn component library
+│   ├── prefill-form/ # Form-related components
+│   └── react-flow/   # React flow diagram related components
+├── context/          # React Context providers
+├── lib/              # Utility functions and helpers
+├── test/             # Test setup utilities
+├── service/          # Business logic and services. Currenlty only containing mapping related processes
+├── state/            # State management, handling state manipulation
+└── types/            # TypeScript type definitions, including dtos, internal and state related
 ```
 
 ## 🛠️ Development
@@ -67,12 +68,14 @@ src/
 
 ### Key Technologies
 
-- **React 19** - Latest version of React
-- **TypeScript** - For type safety
-- **Vite** - Fast development and building
-- **Tailwind CSS** - Utility-first CSS framework
-- **Radix UI** - Unstyled, accessible components
-- **React Flow** - Interactive node-based editor
+- **[React 19](https://react.dev/)** - Latest version of React
+- **[TypeScript](https://www.typescriptlang.org/)** - For type safety
+- **[Vite](https://vite.dev/)** - Fast development and building
+- **[Vitest](https://vitest.dev/)** - vite testing framework
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[Radix UI](https://www.radix-ui.com/)** - Unstyled, accessible components
+- **[Shadcn component library](https://ui.shadcn.com/)**
+- **[React flow](https://reactflow.dev/)** - A customizable React component for building node-based editors and interactive diagrams
 
 ### Code Style
 
@@ -82,21 +85,33 @@ src/
 
 ## 🧪 Testing
 
-_Note: Testing infrastructure is currently being set up_
+The project uses a comprehensive testing setup with the following structure:
 
-## 📝 Adding New Features
+### Test Directory Structure
 
-1. **New Components**
+```
+src/
+├── test/           # Test configuration and setup
+│   └── setup.ts    # Test environment configuration
+└── components/     # Component tests are co-located with components
+```
 
-   - Place reusable UI components in `src/components/ui`
-   - Feature-specific components should go in their respective feature folders
+### Testing Tools
 
-2. **API Integration**
+- **Vitest** - Fast unit testing framework
+- **React Testing Library** - For testing React components
+- **MSW (Mock Service Worker)** - For API mocking
+- **@testing-library/jest-dom** - Custom DOM element matchers
 
-   - Add new API endpoints in `src/api/api.ts`
-   - Use the configured axios instance from `src/api/axios.ts`
+### Running Tests
 
-3. **State Management**
+```bash
+# Run all tests
+npm run test
 
-   - Use React Context for global state
-   - Keep component-specific state local when possible
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests with ui display
+npm run test:ui
+```
