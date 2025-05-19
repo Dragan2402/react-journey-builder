@@ -1,7 +1,7 @@
-import { BlueprintGraph, Node as GraphNode, Form } from '../../types/dto/blueprint';
+import { BlueprintGraphDto, NodeDto as GraphNode, Form } from '../../types/dto/blueprint';
 import { BlueprintNode, NodeProperty } from '../../types/internal/blueprintNode';
 
-export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraph): BlueprintNode[] => {
+export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraphDto): BlueprintNode[] => {
 	var nodesDictionary = blueprint.nodes.reduce<Record<string, GraphNode>>((acc, node) => {
 		acc[node.id] = node;
 
@@ -19,7 +19,7 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraph):
 				label: node.data.name,
 				predecessors: getNodePredecessors(node, nodesDictionary),
 				formName: nodeForm?.name ?? '',
-				properties: nodeForm ? mapFormProperties(nodeForm) : [],
+				properties: nodeForm ? mapFormProperties(nodeForm, node) : [],
 			},
 		} as BlueprintNode;
 	});
@@ -27,6 +27,7 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraph):
 	return nodes;
 };
 
+// Get each node predecessor by traversing the graph, using BFS. Reverse the result to get the correct order.
 const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, GraphNode>) => {
 	const queue = [...node.data.prerequisites];
 	const visited: Record<string, boolean> = {};
@@ -34,11 +35,7 @@ const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, Gr
 	while (queue.length !== 0) {
 		const currentVisitingNodeId = queue.shift();
 
-		if (!currentVisitingNodeId) {
-			return;
-		}
-
-		if (visited[currentVisitingNodeId]) {
+		if (!currentVisitingNodeId || visited[currentVisitingNodeId]) {
 			continue;
 		}
 
@@ -51,10 +48,10 @@ const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, Gr
 		predecessors.push(currentVisitingNodeId);
 	}
 
-	return predecessors;
+	return predecessors.reverse();
 };
 
-const mapFormProperties = (form: Form): NodeProperty[] => {
+const mapFormProperties = (form: Form, node: GraphNode): NodeProperty[] => {
 	const formProperties = form.field_schema.properties;
 
 	const mappedProperties: NodeProperty[] = [];
@@ -64,6 +61,8 @@ const mapFormProperties = (form: Form): NodeProperty[] => {
 		mappedProperties.push({
 			id: propertyId,
 			name: property.title ?? '',
+			nodeId: node.id,
+			nodeName: node.data.name,
 			// values check from input mappings
 		});
 	}

@@ -1,16 +1,16 @@
-export interface BlueprintGraph {
+export interface BlueprintGraphDto {
 	$schema: string;
 	blueprint_id: string;
 	tenant_id: string;
 	name: string;
 	description: string;
 	category: string;
-	nodes: Node[];
+	nodes: NodeDto[];
 	edges: Edge[];
 	forms: Form[];
 }
 
-export interface Node {
+export interface NodeDto {
 	id: string;
 	type: string;
 	position: Position;

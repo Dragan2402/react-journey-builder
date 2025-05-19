@@ -3,7 +3,7 @@ import { createContext, ReactNode, useContext, useEffect, useReducer } from 'rea
 import { mapBlueprintGraphDtoToBlueprintNodes } from '../service/mapper/blueprintMapper';
 import { Edge } from '../types/internal/edge';
 import { BLUEPRINT_ACTION, BlueprintAction, BlueprintState } from '../types/state/blueprintState';
-import { getBlueprint } from '../api/api';
+import { getBlueprint, getGlobalFormProviders } from '../api/api';
 import { blueprintReducer } from '../state/blueprintReducer';
 
 export const BlueprintContext = createContext<
@@ -11,9 +11,9 @@ export const BlueprintContext = createContext<
 >(undefined);
 
 const initialState: BlueprintState = {
-	counter: 1,
 	edges: [],
 	nodes: [],
+	globalProperties: [],
 };
 
 export const BlueprintProvider = ({ children }: { children: ReactNode }) => {
@@ -23,6 +23,7 @@ export const BlueprintProvider = ({ children }: { children: ReactNode }) => {
 		const loadBlueprint = async () => {
 			try {
 				const blueprint = await getBlueprint();
+				const globalFormProviders = getGlobalFormProviders();
 
 				const nodes = mapBlueprintGraphDtoToBlueprintNodes(blueprint);
 				const edges: Edge[] = blueprint.edges.map((edge, index) => {
@@ -37,6 +38,7 @@ export const BlueprintProvider = ({ children }: { children: ReactNode }) => {
 					payload: {
 						edges: edges,
 						nodes: nodes,
+						globalProperties: globalFormProviders,
 					},
 					type: BLUEPRINT_ACTION.INIT,
 				});

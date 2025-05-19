@@ -6,33 +6,28 @@ import { Sheet, SheetTrigger, SheetTitle, SheetContent, SheetDescription, SheetH
 import { BlueprintNode } from './types/internal/blueprintNode';
 import { BlueprintContext } from './context/BlueprintContext';
 
-function App() {	
+function App() {
 	const { state } = useContext(BlueprintContext)!;
 
 	const [selectedNode, setSelectedNode] = useState<BlueprintNode | null>(null);
-	
+
 	const handleNodeSelection = (nodeId?: string) => {
-		const node = state.nodes.find(node => node.id === nodeId);
+		const node = state.nodes.find((node) => node.id === nodeId);
 		if (node) {
 			setSelectedNode(node);
 		}
-	}
+	};
 
 	const handleSheetOpenChange = (open: boolean) => {
 		if (!open) {
 			setSelectedNode(null);
 		}
-	}
+	};
 
 	return (
 		<div className="flex bg-white item-center h-full w-full">
-			{selectedNode && (
-				<PrefillForm
-					selectedNode={selectedNode}
-					handleSheetOpenChange={handleSheetOpenChange}
-				/>
-			)}
-			<GraphFlow selectNode={handleNodeSelection}/>
+			{selectedNode && <PrefillForm selectedNode={selectedNode} handleSheetOpenChange={handleSheetOpenChange} />}
+			<GraphFlow selectNode={handleNodeSelection} />
 		</div>
 	);
 }

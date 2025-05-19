@@ -12,7 +12,9 @@ export interface BlueprintNode {
 export interface NodeProperty {
 	id: string;
 	name: string;
-	value?: PropertyValue;
+	nodeId: string;
+	nodeName: string;
+	inheritingProperty?: NodeProperty;
 }
 
 interface NodePosition {
@@ -20,7 +22,8 @@ interface NodePosition {
 	y: number;
 }
 
-interface PropertyValue {
-	sourceId: string;
-	sourceName: string;
+export interface GlobalFormProvider {
+	id: string;
+	name: string;
+	properties: NodeProperty[];
 }
