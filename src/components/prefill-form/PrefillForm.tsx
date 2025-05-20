@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import { BlueprintNode, NodeProperty } from '@/types/internal/blueprintNode';
 import { BlueprintContext } from '@/context/BlueprintContext';
 import { BLUEPRINT_ACTION } from '@/types/state/blueprintState';
+import { QueryScope } from '@/types/internal/queryScope';
 
 import propertyImage from '../../assets/property-icon.png';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
@@ -11,10 +12,11 @@ import PropertySelection from './PropertySelection';
 
 interface PrefillFormProps {
 	selectedNode: BlueprintNode;
+	queryScopes: QueryScope[];
 	handleSheetOpenChange: (open: boolean) => void;
 }
 
-const PrefillForm = ({ selectedNode, handleSheetOpenChange }: PrefillFormProps) => {
+const PrefillForm = ({ selectedNode, queryScopes = [], handleSheetOpenChange }: PrefillFormProps) => {
 	const { state, dispatch } = useContext(BlueprintContext)!;
 	const [selectedProperty, setSelectedProperty] = useState<NodeProperty | null>(null);
 
@@ -80,7 +82,9 @@ const PrefillForm = ({ selectedNode, handleSheetOpenChange }: PrefillFormProps) 
 						</div>
 					)}
 
-					{selectedProperty && <PropertySelection node={selectedNode} selectProperty={handlePropertySelection} />}
+					{selectedProperty && (
+						<PropertySelection queryScopes={queryScopes} node={selectedNode} selectProperty={handlePropertySelection} />
+					)}
 				</div>
 			</SheetContent>
 		</Sheet>

@@ -5,8 +5,13 @@ export interface BlueprintNode {
 	data: {
 		label: string;
 		properties: NodeProperty[];
-		predecessors: string[];
+		predecessors: NodePredecessor[];
 	};
+}
+
+export interface NodePredecessor {
+	id: string;
+	direct: boolean;
 }
 
 export interface NodeProperty {

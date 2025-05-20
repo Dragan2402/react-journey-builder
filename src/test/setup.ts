@@ -5,15 +5,12 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 
 import '@testing-library/jest-dom';
 
-// Extend Vitest's expect method with methods from react-testing-library
 expect.extend(matchers);
 
-// Cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {
 	cleanup();
 });
 
-// Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
 	writable: true,
 	value: vi.fn().mockImplementation((query) => ({

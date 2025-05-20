@@ -1,5 +1,5 @@
 import { BlueprintGraphDto, NodeDto as GraphNode, Form } from '../../types/dto/blueprint';
-import { BlueprintNode, NodeProperty } from '../../types/internal/blueprintNode';
+import { BlueprintNode, NodePredecessor, NodeProperty } from '../../types/internal/blueprintNode';
 
 export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraphDto): BlueprintNode[] => {
 	var nodesDictionary = blueprint.nodes.reduce<Record<string, GraphNode>>((acc, node) => {
@@ -10,6 +10,7 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraphDt
 
 	const nodes: BlueprintNode[] = blueprint.nodes.map((node) => {
 		const nodeForm = blueprint.forms.find((f) => f.id === node.data.component_id);
+		const directEdgesToTheNode = blueprint.edges.filter((e) => e.target === node.id);
 
 		return {
 			id: node.id,
@@ -17,7 +18,12 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraphDt
 			type: node.type,
 			data: {
 				label: node.data.name,
-				predecessors: getNodePredecessors(node, nodesDictionary),
+				predecessors: getNodePredecessors(node, nodesDictionary).map((predecessor) => {
+					return {
+						id: predecessor.id,
+						direct: directEdgesToTheNode.some((e) => e.source === predecessor.id),
+					};
+				}),
 				formName: nodeForm?.name ?? '',
 				properties: nodeForm ? mapFormProperties(nodeForm, node) : [],
 			},
@@ -31,7 +37,8 @@ export const mapBlueprintGraphDtoToBlueprintNodes = (blueprint: BlueprintGraphDt
 const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, GraphNode>) => {
 	const queue = [...node.data.prerequisites];
 	const visited: Record<string, boolean> = {};
-	const predecessors: string[] = [];
+	const predecessors: NodePredecessor[] = [];
+
 	while (queue.length !== 0) {
 		const currentVisitingNodeId = queue.shift();
 
@@ -45,7 +52,10 @@ const getNodePredecessors = (node: GraphNode, nodesDictionary: Record<string, Gr
 
 		visited[currentVisitingNodeId] = true;
 
-		predecessors.push(currentVisitingNodeId);
+		predecessors.push({
+			id: currentVisitingNodeId,
+			direct: false,
+		});
 	}
 
 	return predecessors.reverse();
